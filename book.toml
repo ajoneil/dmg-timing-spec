@@ -1,0 +1,25 @@
+[book]
+title = "DMG Timing Specification"
+description = "A gate-level hardware reference for the original Game Boy (DMG-CPU B)"
+authors = ["Andrew O'Neil"]
+language = "en"
+# explicit: mdbook 0.5 serializes null otherwise, which mdbook-admonish 1.20 cannot parse
+text-direction = "ltr"
+src = "src"
+
+[output.html]
+site-url = "/dmg-timing-spec/"
+default-theme = "rust"
+preferred-dark-theme = "coal"
+fold = { enable = true, level = 1 }
+additional-css = ["./mdbook-admonish.css"]
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
+
+[preprocessor]
+
+[preprocessor.admonish]
+command = "mdbook-admonish"
+assets_version = "3.1.0" # do not edit: managed by `mdbook-admonish install`
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
