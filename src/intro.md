@@ -37,7 +37,8 @@ its role, its connections, and where it is described.
 
 - **Not a general Game Boy reference.** The console's general hardware and
   programming model are covered in detail by
-  [gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf); this book does not duplicate
+  [gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf) and
+  [Pan Docs](https://gbdev.io/pandocs/); this book does not duplicate
   them. Where a subsystem's behavioural surface is already well documented (the
   timer is the clearest example), the relevant chapter summarises it briefly, cites
   the existing reference, and spends its pages on the gate-level structure

@@ -10,7 +10,7 @@ signals so that CPU writes during the corresponding lock window never reach
 the storage.
 
 *Which* windows are locked is well-trodden behavioural ground
-([gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf) covers the accessibility
+([Pan Docs](https://gbdev.io/pandocs/) covers the accessibility
 rules); this chapter documents the gates that enforce them, and what those
 gates imply at the window boundaries.
 

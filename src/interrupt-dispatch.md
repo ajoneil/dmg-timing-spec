@@ -3,7 +3,7 @@
 When an unmasked interrupt is latched into IF with IME=1, the CPU dispatches
 to its handler through a fixed 5-M-cycle sequence. The behavioural shape —
 five M-cycles, two pushes, the vector table — is standard reference material
-([gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf)); this chapter documents
+([Pan Docs](https://gbdev.io/pandocs/)); this chapter documents
 the machinery: the CLK9-cadence capture DFF, the precharged-evaluate priority
 chain, the instruction-boundary gate, the per-edge write-back rule, and the
 measured slip regimes.

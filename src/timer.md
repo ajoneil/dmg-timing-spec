@@ -7,9 +7,10 @@ pipeline](halt-ei.md), and [the IF register](if-register.md).
 ```
 
 The timer's behavioural surface — DIV, TIMA/TMA/TAC semantics, the reload
-quirks, the write-during-reload edge cases — is covered thoroughly in
-[gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf)'s timer chapter, and this
-book does not restate it. What this chapter adds is the gate inventory
+quirks, the write-during-reload edge cases — is documented in
+[Pan Docs](https://gbdev.io/pandocs/), and this book does not restate it.
+(gb-ctr defines the four timer registers in its memory-map tables but does
+not yet cover their behaviour.) What this chapter adds is the gate inventory
 underneath: the actual counter cells, the exact register-to-counter bit
 mapping, and the picosecond-resolution edge sequence of the reload cycle.
 
@@ -77,7 +78,7 @@ in `reg_div16` terms:
 TIMA increments on the **falling edge** of the selected bit, gated by
 TAC.2 through SOGU — which is why a TAC disable (or a DIV write that
 drops the selected bit) can itself produce an increment: the gate output
-falls. (The behavioural consequences are gb-ctr's territory; the gate
+falls. (The behavioural consequences are documented in Pan Docs; the gate
 explains them all.)
 
 ## The reload cycle, edge by edge
@@ -119,8 +120,8 @@ The key phase fact: **both the interrupt flag and the TMA load fire at the
 M-cycle — not at its end. The documented "one-M-cycle delay" between
 overflow and interrupt is the gap from the wrap late in one M-cycle
 (~+15.7 ns in) to the IF rise early in the next (+931 ps in). MEXU stays
-high through the whole reload M-cycle — the window where gb-ctr's TIMA/TMA
-write interactions play out — and releases 2,463 ps into the next.
+high through the whole reload M-cycle — the window where the documented
+TIMA/TMA write interactions play out — and releases 2,463 ps into the next.
 
 The dispatch-side continuation of `int_timer` — through the IF latch and
 into the CPU's interrupt chain — is in

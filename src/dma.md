@@ -1,9 +1,10 @@
 # OAM DMA
 
 OAM DMA copies 160 bytes from a source page to OAM at one byte per M-cycle.
-The behavioural surface — timing, the source-region quirks, the "CPU should
-stay in HRAM" rule — is documented in
-[gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf). What this chapter adds is
+The behavioural surface — the source-region quirks
+([gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf) covers the address
+decoding), and the transfer timing and "CPU should stay in HRAM" rule
+([Pan Docs](https://gbdev.io/pandocs/)) — is documented elsewhere. What this chapter adds is
 the arbitration machinery: who owns each bus during DMA, what the PPU's scan
 and fetch hardware does in the meantime, what happens at the engage/release
 boundaries to the dot, and what the CPU actually observes when it touches a

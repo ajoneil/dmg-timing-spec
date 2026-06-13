@@ -3,7 +3,7 @@
 The store captures up to 10 sprites' X positions (plus per-slot state)
 into dedicated latch arrays — the first 10 Y-matching sprites in OAM-index
 order, the widely documented DMG behaviour
-([gb-ctr](https://gekkio.fi/files/gb-docs/gbctr.pdf) covers the rule; this
+([Pan Docs](https://gbdev.io/pandocs/) covers the rule; this
 page covers the machinery). Each slot has its own write enable
 (`save_sprite_numN`, N ∈ [0..9]): a 4-bit slot counter and a 10-way
 one-hot decoder make exactly one enable fire per matching sprite.
