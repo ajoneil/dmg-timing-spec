@@ -2,9 +2,10 @@
 
 ## Primary sources (ground truth)
 
-- **[msinger/dmg-schematics](https://github.com/msinger/dmg-schematics)** —
-  transistor-level reverse engineering of the DMG-CPU B die. The origin of
-  every gate name in this book.
+- **[msinger/dmg-schematics](https://github.com/msinger/dmg-schematics)**
+  (msinger and [rgalland](https://github.com/rgalland)) — transistor-level
+  reverse engineering of the DMG-CPU B die. The origin of every gate name in
+  this book.
 - **[msinger/dmg-sim](https://github.com/msinger/dmg-sim)** — SystemVerilog
   simulation generated from the schematics, run under Icarus Verilog. The
   source of every "dmg-sim measurement" citation.

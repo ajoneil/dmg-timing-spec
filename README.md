@@ -36,7 +36,7 @@ standards, scope, and verification discipline. Claude (Opus 4.6 through 4.8), wo
 through a Claude Code harness, drafted the prose and ran the research and measurement.
 
 The methodology is netlist-authoritative throughout. Every gate name is a cell in
-[msinger's public netlist][dmg-schematics], every dynamic figure is reproducible from
+[the public netlist][dmg-schematics], every dynamic figure is reproducible from
 [msinger's public simulation][dmg-sim] at the calibration constant the book pins, and the
 combinational-depth and race figures come from [static analysis of that netlist][propagation].
 No emulator was used as a source of hardware truth, and behaviour not settled by
@@ -61,7 +61,7 @@ easy to pin down and fix.
 This book builds on a lot of other people's reverse engineering. Without it, none of this
 would be possible.
 
-- **msinger**: the DMG-CPU B die reverse engineering this book stands on. The
+- **msinger and rgalland**: the DMG-CPU B die reverse engineering this book stands on. The
   [netlist][dmg-schematics] supplies its ground truth, and the [gate-level
   simulation][dmg-sim] produces every dynamic measurement.
 - **Furrtek**: the die photography and tracing the gate-level reverse engineering descends
