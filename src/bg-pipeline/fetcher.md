@@ -222,3 +222,41 @@ window-mode flag that ignores PYNU↓ renders window content where hardware
 shows BG — there is no fetcher-side window latch in the netlist beyond the
 cycle-local tile-index capture.
 ```
+
+## SCX/SCY sampling during the fetch
+
+SCX and SCY both feed the VRAM address adder, but they enter at different fetch
+stages, so a mid-Mode-3 scroll write splits differently for X and Y:
+
+| Scroll input | Drives | Stage(s) sampled | Mid-fetch write effect |
+|--------------|--------|------------------|------------------------|
+| SCX, map column | tilemap column bits | counter=0 only | tile-aligned 8-px shift (like BG_MAP); no hybrid |
+| SCX, fine scroll (`SCX & 7`) | startup pixel-clock suppression | startup fine scroll only | separate mechanism; never a tile-data address |
+| SCY, map row | tilemap row bits | counter=0 only | tile-aligned 8-px shift (like BG_MAP) |
+| SCY, fine-Y | tile-data row offset | counter=2 **and** counter=4 | hybrid Y-fetch (like TILE_SEL): low/high bitplanes from different fine-Y rows |
+
+Like the LCDC fetch-address bits, the scroll address bits are level-sensitive,
+not edge-captured: each stage drives the adder from whatever the SCX/SCY latch
+holds at that stage's address dot (counter=0, then +2, then +4). Which SCY each
+of the three stages sees therefore depends on where any mid-fetch write commits.
+A write landing in the counter=2 → counter=4 gap leaves the map row (counter=0)
+and the low-bitplane fine-Y (counter=2) on the old SCY while the high-bitplane
+fine-Y (counter=4) takes the new one — splitting the two bitplanes vertically,
+the Y-direction analogue of the LCDC.4 hybrid fetch.
+
+```admonish info "Measured: the SCY fetch path"
+From the Mealybug `m3_scy_change` ROM (dmg-sim, TIMING=default), which sweeps SCY
+as a triangle 0,1,2,3,4,3,2,1×3 (24 FF42 writes per line, one BEDY↑ every 8
+dots), observed on the external VRAM address bus `ma[12:0]` — the adder output.
+Within each 8-dot tile the three address stages land 2 dots apart: counter=0
+tilemap (map row = `ma[9:5]`), counter=2 tile-data low and counter=4 tile-data
+high (fine-Y = `ma[3:1]`, bitplane = `ma[0]`). On a scanline where the sweep
+crosses a tile boundary the map row reads out directly — e.g. LY=44, the
+counter=0 read of the tile whose `ma` settles to `$18c3` gives `map_row=6`, which
+only occurs at SCY=4, so the tilemap adder used SCY=4. That tile's counter=2 read
+(`fineY=0`) also used SCY=4, while its counter=4 read (`fineY=7`) used SCY=3: the
+SCY write (4→3) committed at BEDY↑+0.08 dots, landing between the two tile-data
+reads (counter=2 read 1.54 dots before the value settled, counter=4 read 0.44
+dots after). The map row and the low bitplane always agree; only the high
+bitplane catches the intervening write.
+```
