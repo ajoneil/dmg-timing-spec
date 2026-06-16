@@ -178,7 +178,42 @@ step never advances" with the mechanism made precise.
 with the DAC on (NR12 = 0xF3 retained), the running latch set, and the
 period divider mid-count at 0x7F9. Only NR52 clears the duty counter, so it
 persists into the handoff. CH2 stays at 0. See
-[post-boot state](post-boot.md).
+[post-boot state](post-boot.md). This post-boot step is the baseline the
+fast-retrigger staircase below counts up from.
+
+### The fast-retrigger phase staircase
+
+A fast-retrigger loop freezes the counter at its running value, and *which* value
+is a **staircase in the trigger phase**: while the divider free-runs, the counter
+advances once per overflow, so the pinned step is just how many overflows landed
+before the loop's first reload caught it — +1 step per overflow interval
+(`0x800 − period` ticks).
+
+```admonish info "Measured: the pinned-step staircase"
+Sweeping the pin trigger one M-cycle later across 80 steps (period 0x7F0, a 64-T
+overflow interval) walks the pinned counter **0→1→2→3→4→5** — one step per 64 T
+of added delay. The boundary is sharp to one `chN_1mhz` tick: adjacent triggers
+4 T apart give a clean one-step change, at counter 0→1 and at the silent→audible
+**4→5** edge of the 50% pattern (dmg-sim measurement, purpose-built
+`apu_ch1_duty_phase_sweep` ROM).
+```
+
+The emitted bit is the **pre-advance** step — `duwo` captures on `chN_frst`↑, the
+counter advances on the following `chN_frst`↓ — so a counter pinned at *k* ≥ 1
+plays step *k* − 1 (pinned at 0, having seen no overflow, the latch still holds
+its `apu_reset` 0). The flip is therefore one step past the pattern edge: for the
+50% pattern (high at steps 4–7) the bit is 0 for a counter pinned at 0–4 and high
+at 5 (measured `chN_out` 0 → full-scale across 4→5).
+
+```admonish tip "Rule: the trigger phase quantum is one tick"
+A retrigger write lands on an M-cycle (4-T) boundary and `chN_restart`
+re-synchronises it to the next `chN_1mhz`↑, so the trigger only moves in whole
+`chN_1mhz` ticks — never a sub-tick. The pinned step changes once per overflow
+interval; at a step boundary a single 4-T shift carries the pin across that
+overflow's `chN_frst` fall and flips the captured count — **one overflow, not a
+sub-`chN_1mhz` parity effect.** Which side of the edge a boundary trigger lands on
+is the overflow-capture race of *Trigger-vs-overflow on the same edge* above.
+```
 
 ### The inter-trigger audible window
 
