@@ -13,9 +13,9 @@ the trigger quirks *fall out* — including the exact silicon meaning of
   bits.
 - Trigger and natural overflow share **one load net** — there is no
   trigger-only load path, and the load is level-sensitive.
-- The **first overflow after a trigger comes one `chN_1mhz` cycle late**;
-  every overflow after runs at the steady period (formula and measurement
-  in the Rule below).
+- **A channel-enabling trigger's first overflow comes one `chN_1mhz` cycle
+  late**; a retrigger of a running channel and every natural overflow run at
+  the steady period (Rule below).
 - The duty counter clocks on `chN_frst` **falling** and resets only on
   `apu_reset` — fast retriggers starve it rather than resetting it.
 ```
@@ -36,7 +36,7 @@ apu_4mhz → prescaler /2 → prescaler /2 → chN_1mhz ─(gated by chN_fdis)�
 |------------------|------|------|-----------------|-------|
 | AJER / ATEP | Prescaler /2 stage 1 | dffr | `apu_4mhz` (per-channel buffer) | Toggle; free-running 2 MHz; only reset is `apu_reset` — **never reloaded by triggers** |
 | CALO / CEMO | Prescaler /2 stage 2 | dffr | stage-1 ripple | Toggle; free-running 1 MHz; output (buffered / directly) is `chN_1mhz` |
-| `ch1_fdis` / `ch2_fdis` | Channel-disable latch | nand_latch | Set: trigger (one cycle delayed); Reset: DAC-off / `apu_reset` | While set, gates the divider toggle clock low |
+| `ch1_fdis` / `ch2_fdis` | Channel-disable latch | nand_latch | Set: DAC-off / `apu_reset`; Reset: trigger (one cycle delayed) | While set, gates the divider toggle clock low |
 | FULO→GEKU / CAMA→DOCA | Divider toggle clock | nor2 + not | `chN_1mhz` gated by `chN_fdis` | Bit 0 toggles on the active-high rise |
 | GAXE HYFE JYTY KYNA / DONE DYNU EZOF CYVO | Divider bits 0–3 | tffnl | bit-to-bit ripple | Load enable `fume` / `cogu` |
 | JEMA HYKE FEVA EKOV / FUXO GANO GOCA GANE | Divider bits 4–7 | tffnl | ripple via inverter (KYPE / sibling) | Load enable `dega` / `erog` |
@@ -114,22 +114,32 @@ once, indistinguishably from the natural path.
 
 ### Trigger-to-first-overflow: the load-settle cycle
 
-At the load-window exit edge, the toggle clock reaches the bit-0 cell
-*before* the load enable drops — and the cell ignores it (load mode wins).
-The first real count comes one cycle later. Total:
+The divider's toggle clock (`GEKU` / `DOCA`) is `chN_1mhz` gated by
+`chN_fdis`, so while the channel is disabled the divider holds its value. A
+**channel-enabling** trigger loads the divider (`chN_restart`↑, above) while
+`chN_fdis` is still set; the loaded value is held one extra `chN_1mhz` tick —
+the divider cannot count until `chN_fdis` clears. A trigger of an
+already-running channel (`chN_fdis` already 0) reloads while the toggle clock
+is still running and counts on the next tick — no extra hold.
 
-```admonish tip "Rule: first overflow is one cycle late"
-**trigger → first overflow = (0x800 − period) + 1 `chN_1mhz` cycles**;
-subsequent overflows at the steady `0x800 − period`. Measured for a steady
-63-cycle interval (`0x800 − period` = 63): the first interval is +64.4
-cycles, then exactly +63 (dmg-sim measurement).
+```admonish tip "Rule: only the channel-enabling trigger is one cycle late"
+**Channel-enabling trigger → first overflow = (0x800 − period) + 1
+`chN_1mhz` cycles.** A retrigger of a running channel — like every natural
+overflow — takes the steady `0x800 − period`. Measured at `0x800 − period`
+= 63: an enabling trigger's first interval is +64.4 cycles, then exactly
++63; a retrigger's first interval is +63, and toggling the DAC off then on
+restores the +1 on the following trigger (dmg-sim measurement).
 ```
 
 ```admonish note "For implementors"
-Per-T-cycle emulators must hold the divider at the loaded value for
-**two** consecutive ticks before the first toggle — collapsing engage and
-exit onto one edge under-counts by one, which is exactly the off-by-one
-behind several hardware-verified duty/envelope race outcomes.
+Apply the two-tick hold (the loaded value held for **two** consecutive ticks
+before the first toggle) only on the trigger that re-enables the channel
+(`chN_fdis` 1→0). Applying it to every trigger makes a retrigger's first
+interval one tick too long — the boot chime's second trigger retriggers the
+running channel, and the spurious +1 leaves the post-boot CH1 divider at
+0x7F8 instead of 0x7F9. Collapsing the two ticks onto one edge makes the
+enabling trigger's interval one tick too short — the off-by-one behind
+several hardware-verified duty/envelope race outcomes.
 ```
 
 ## The duty step counter
