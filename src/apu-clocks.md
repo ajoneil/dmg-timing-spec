@@ -80,9 +80,10 @@ family ([CH3](apu-ch3.md)).
 The 512/256/128/64 Hz strobes hang off `reg_div16`
 ([timer](timer.md)) — but in two structurally different ways:
 
-**Family A — `reg_div16`-direct.** `horu_512hz` is combinational from a
-`reg_div16` bit (through the BURE/FYNE/GALE/GEXY/HORU buffer chain) — no
-DFF, no reset. It free-runs unbroken across everything except a DIV write.
+**Family A — `reg_div16`-direct.** `horu_512hz` is combinational from
+`reg_div16` bit 10 (through the BURE/FYNE/GALE/GEXY/HORU buffer chain) —
+no DFF, no reset. It free-runs unbroken across everything except a DIV
+write.
 
 **Family B — the `apu_reset`-reset ripple.** The 256/128/64 Hz strobes tap
 a 3-bit ripple counter clocked by the 512 Hz BURE and **async-reset to 0 by
@@ -99,6 +100,27 @@ Measured steady-state phases (dmg-sim measurement): all strobe edges land
 at T2 with per-signal offsets of +6,400 to +9,700 ps, exact period ratios
 1 : 2 : 4, and zero off-phase edges across hundreds of cycles. `kene`↓ —
 the envelope advance — is the ripple's step-7→0 wrap.
+
+## The bare DIV write
+
+A DIV write clears `reg_div16` through `reset_div_n` (UCOB —
+[timer](timer.md)) but does **not** assert `apu_reset`. Unlike a
+power-cycle it therefore does not reset the Family-B ripple; it can only
+**clock** it.
+
+CARU's clock BURE rises when `reg_div16` bit 10 falls. A DIV write
+landing while bit 10 is **high** forces it 1→0, and the resulting BURE↑
+toggles CARU: the ripple steps once. While bit 10 is **low** the reset
+makes no edge and the ripple holds. This is the same gate behaviour as a
+DIV write that drops a TAC-selected bit clocking TIMA
+([timer](timer.md)).
+
+Measured (dmg-sim, two `late_div_write` FSTs one sub-step apart): a bare
+write at `reg_div16 = 0x3FF` (bit 10 low) holds the ripple; at `0x400`
+(bit 10 high) the reset drops bit 10 and CARU steps once. The BURE↑ that
+clocks it trails the reset edge by ≈ one T-cycle, so the advance is a
+**level** test on bit 10 at the write M-cycle, not a sub-ns
+BURE-vs-`reset_div_n` race.
 
 ## The NR52 power-cycle re-lock rule
 
