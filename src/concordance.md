@@ -1,6 +1,6 @@
 # Appendix A: Signal Concordance
 
-Every netlist gate named in this book — 951 signals — with its role, cell
+Every netlist gate named in this book — 1016 signals — with its role, cell
 type, and the chapter that owns its primary description. Gate names come
 from the DMG-CPU B netlist via
 [msinger/dmg-schematics](https://github.com/msinger/dmg-schematics); each
@@ -78,6 +78,7 @@ mention.
 | BAPY |  |  | [Register Writes](registers/writes.md) |  |
 | BATU |  |  | [The IF Register](if-register.md) |  |
 | BAVE | Sweep pace = 0 detector | and3 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
+| BAVU | `ch4_1mhz` — CH4 base clock (`= NOT avok`, ~1.048 MHz) | not_x1 | [CH4: Noise Channel](apu-ch4.md) |  |
 | BAXO |  |  | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |  |
 | BEBA | = NOT(AVOG) — SCX read drivers' `ena_n` | not_x1 | [Register Reads](registers/reads.md) |  |
 | BEBU | Scan-complete aggregate | or3 | [The Clock Tree](clock-tree.md) | [Rendering Mode Control](mode-control.md), [Mode 2: OAM Scan](oam-scan.md), [Mode Transitions](mode-transitions.md) |
@@ -120,6 +121,7 @@ mention.
 | CAPY | CH1 length-clock gate | nor3 | [Length Counters and Power Cycling](apu-length-power.md) |  |
 | CARE | Global sprite-save enable | and3 | [Mode 2: OAM Scan](oam-scan.md) | [Mode Transitions](mode-transitions.md), [Scanline and Frame Timing](scanline-frame-timing.md) |
 | CARU | Frame sequencer /2 → 256 Hz (length tap) | dffr | [APU Clock Tree and Frame Sequencer](apu-clocks.md) | [Length Counters and Power Cycling](apu-length-power.md), [Post-Boot State](post-boot.md) |
+| CARY | `noise_counter_clk` — CH4 shift-divider clock (`ch4_1mhz & gary`) | and2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | CASY | SCX bit-7 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | CATA | SCX bit-5 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | CATU | Scan-boundary trigger | dffr | [OAM DMA](dma.md) | [Mode 2: OAM Scan](oam-scan.md), [Mode Transitions](mode-transitions.md), [CPU-Visible Mode Boundaries](cpu-visible-boundaries.md) |
@@ -136,6 +138,7 @@ mention.
 | CERA | CH2 length counter bit 1 | tffnl | [Length Counters and Power Cycling](apu-length-power.md) |  |
 | CERY | CH3 prescaler /2 stage | dffr | [APU Clock Tree and Frame Sequencer](apu-clocks.md) | [CH3: Wave Channel](apu-ch3.md) |
 | CEVU | CH1 duty-pattern select | nor2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| CEXO | CH4 shift divider bit 0 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | CODO | CH1 duty counter-state decode | not_x1 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | COMY | CH1 overflow capture (/2 toggle) | dffr | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | CONU | CH2 length counter bit 2 | tffnl | [Length Counters and Power Cycling](apu-length-power.md) |  |
@@ -161,26 +164,37 @@ mention.
 | CYVO | CH2 divider bit 3 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DAFA | Sweep counter load enable (NOR stage) | nor2 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | DAJO | CH1 duty counter clock | not_x1 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| DALE | CH4 shift divider bit 5 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DAPE | CH1 duty counter bit 2 (MSB) | dffr_cc | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DARE | CH2 duty counter-state decode | not_x1 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| DARY | CH4 divider low-tap mux (bits 0,1,2,3 group) | ao2222 | [CH4: Noise Channel](apu-ch4.md) |  |
 | DASA |  |  | [Mode 2: OAM Scan](oam-scan.md) |  |
+| DATO | CH4 LFSR output → envelope gate | or2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | DEGO | Per-slot X match, FEFY group (active-low) | nand3 | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |  |
+| DEKO | CH4 shift divider bit 1 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DEME | CH2 length-clock gate | nor3 | [Length Counters and Power Cycling](apu-length-power.md) |  |
+| DEMO | CH4 shift divider bit 7 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DEPO | OAM attribute bit 7 latch (BG-over-OBJ priority) | dlatch_ee | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |  |
+| DERE | CH4 shift divider bit 12 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DERO | CH3 wave-position counter clock | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
 | DERU | CH1 divider ripple inverter (bits 8–10) | not_x1 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| DETE | CH4 shift divider bit 9 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DOBA | ALET-clocked scan-done-prev | dffr | [The Clock Tree](clock-tree.md) | [Mode 2: OAM Scan](oam-scan.md), [Mode Transitions](mode-transitions.md), [Scanline and Frame Timing](scanline-frame-timing.md) |
 | DOCA | CH2 divider toggle clock (NOT stage) | not_x1 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DODA | CH3 length-clock gate | nor3 | [Length Counters and Power Cycling](apu-length-power.md) |  |
 | DOJU | CH2 duty-pattern select | nor2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DOKA | Overflow-capture self-clear term (= AND2(COMY, `ch1_1mhz`)) | and2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| DOKE | CH4 shift divider bit 6 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DOME | CH2 PWM latch | dffr | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DOMO | CH2 duty-pattern select | nor2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DONE | CH2 divider bit 0 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| DOSE | CH4 shift divider bit 8 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
+| DOTA | CH4 shift divider bit 11 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DOVE | CH2 duty-pattern select | nor2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DOXE | SCX bit-6 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | DUGA |  |  | [OAM DMA](dma.md) |  |
 | DUJU | CH2 divider load enable | nor2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| DURE | CH4 shift divider bit 4 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | DUWO | CH1 PWM latch | dffr | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | DYBA | = NOT(BYVA) — per-slot line-reset term | not_x1 | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |  |
 | DYBE | Slot counter bit 3 (MSB) | dffr | [Mode 2: OAM Scan](oam-scan.md) |  |
@@ -208,26 +222,35 @@ mention.
 | EKOB | SCX bit-1 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | EKOV | CH1 divider bit 7 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | ELYN | Scan counter bit 3 | dffr | [Mode 2: OAM Scan](oam-scan.md) |  |
+| ELYX | CH4 divider mid-tap mux (bits 4,5,6,7 group) | ao2222 | [CH4: Noise Channel](apu-ch4.md) |  |
 | EMUS | CH1 divider bit 8 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | EMYR | Volume saturation detector (vol 0 + down) | nor5 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | ENEF | Y-compare carry-chain bit 1 | full_add | [Mode 2: OAM Scan](oam-scan.md) |  |
 | ENEK | CH1 duty counter-state decode | and2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| EPOR | CH4 shift divider bit 3 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | EPYK | CH1 divider load enable | nor2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | EROS | CH1 duty counter bit 1 | dffr_cc | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | ERUC | Y-compare carry-chain bit 0 | full_add | [Mode 2: OAM Scan](oam-scan.md) |  |
 | ERUS | CH3 wave-position bit 1 | dffr | [CH3: Wave Channel](apu-ch3.md) |  |
+| ERUT | CH4 shift divider bit 10 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | ERYC | CH2 length counter bit 0 | tffnl | [Length Counters and Power Cycling](apu-length-power.md) |  |
+| ERYF | CH4 divider low-tap aggregate | or2 | [CH4: Noise Channel](apu-ch4.md) |  |
+| ESEP | CH4 shift divider bit 13 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | ESUT | CH1 duty counter bit 0 (LSB) | dffr | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | ETAN | Wave-position counter reset (active-low) | nor2 | [CH3: Wave Channel](apu-ch3.md) |  |
+| ETYR | CH4 divider high-tap mux (bits 8–13) | ao222222 | [CH4: Noise Channel](apu-ch4.md) |  |
 | EVAK | CH1 divider bit 9 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | EXEL | CH3 wave-position bit 3 | dffr | [CH3: Wave Channel](apu-ch3.md) |  |
+| EZEF | CH4 shift divider bit 2 | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | EZOF | CH2 divider bit 2 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | EZOZ | CH1 duty counter-state decode | and2 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| EZUL | CH4 LFSR-output / bypass mux | mux | [CH4: Noise Channel](apu-ch4.md) |  |
 | FABO | `ch3_restart` sample clock (= NOT(`ch3_2mhz`)) | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
 | FAHA | Scan counter bit 4 | dffr | [Mode 2: OAM Scan](oam-scan.md) |  |
 | FAMU | `~ma4` tri-state driver | not_if0 | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |  |
 | FECO | Y-compare carry-chain bit 2 | full_add | [Mode 2: OAM Scan](oam-scan.md) |  |
 | FEFY | Sprites 0–4 X-match aggregate | nand5 | [Mode 2: OAM Scan](oam-scan.md) | [Mode 3: The BG Pipeline](bg-pipeline.md), [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |
+| FEME | CH4 LFSR shift-clock select (`ff22_d7 ? etyr : eryf`) | mux | [CH4: Noise Channel](apu-ch4.md) |  |
 | FEMO |  |  | [Mode 2: OAM Scan](oam-scan.md) |  |
 | FENA | Volume counter bit 3 | tffnl | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | FENO | Volume counter bit 0 | tffnl | [Sweep and Envelope](apu-sweep-envelope.md) |  |
@@ -260,14 +283,18 @@ mention.
 | FYRE | Volume saturation detector (vol 15 + up) | not_x1 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | GACE | NOT(GOPU) — Y-compare sum bit 4, complemented | not_x1 | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GALE | `horu_512hz` buffer chain stage | mux | [APU Clock Tree and Frame Sequencer](apu-clocks.md) |  |
+| GAME | `lfsr_out` — CH4 LFSR output AND `ch4_active` | and2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | GANE | CH2 divider bit 7 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | GANO | CH2 divider bit 5 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | GARA | `ch3_restart` synchroniser DFF | dffr | [CH3: Wave Channel](apu-ch3.md) |  |
+| GARY | CH4 shift-divider clock-enable latch (cleared by trigger) | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | GAVA | Scan counter clock | or2 | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GAVU | NR34 trigger-bit capture | drlatch_ee | [CH3: Wave Channel](apu-ch3.md) |  |
 | GAXE | CH1 divider bit 0 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | GEJY | OBJ_SIZE mux | ao22 | [LCDC Structure](registers/lcdc.md) | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |
 | GEKU | CH1 divider toggle clock (NOT stage) | not_x1 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| GENA | `ch4_active` nor_latch (set by `ch4_restart`) | nor_latch | [CH4: Noise Channel](apu-ch4.md) |  |
+| GEPO | CH4 LFSR-reset OR (`ch4_restart`, `apu_reset`) | or2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | GEPY | CH4 length-clock gate | nor3 | [Length Counters and Power Cycling](apu-length-power.md) |  |
 | GESE | `sprite_y_match` driver | not_x1 | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GEWY | NOT(WUHU) — Y-compare sum bit 7, complemented | not_x1 | [Mode 2: OAM Scan](oam-scan.md) |  |
@@ -275,54 +302,85 @@ mention.
 | GOBA | SCY bit-1 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | GOCA | CH2 divider bit 6 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | GODO | SCY bit-3 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
+| GOFU | CH4 prescaler load-enable NOR (`ch4_restart`, `gary`) | nor2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | GOFY | NR34 trigger nor_latch (q_n is held) | nor_latch | [CH3: Wave Channel](apu-ch3.md) |  |
+| GOGE | CH4 LFSR reset (`= NOT gepo`) | not_x2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | GOJU | Y-compare carry-chain bit 6 | full_add | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GOMO |  |  | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |  |
+| GONE | `ch4_restart` synchroniser DFF (clk `hama_512khz`) | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | GONU | SCY bit-2 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | GOPU | Y-compare carry-chain bit 4 | full_add | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GOSO | Scan counter bit 2 | dffr | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GOVU | LCDC.2 mask | or2 | [LCDC Structure](registers/lcdc.md) | [Mode 2: OAM Scan](oam-scan.md) |
 | GUFY | Volume saturation detector aggregate | or2 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | GUNE | SCY bit-6 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
+| GUNY | CH4 `gary` reset (NOR `apu_reset`, `ch4_restart`) | nor2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | GUSU |  |  | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GUVA | = NOT(YDUG) — slot-0 match select | nor2 | [Mode 3: The Sprite Pipeline](sprite-pipeline.md) |  |
 | GUVU | NOT(FUWA) — Y-compare sum bit 5, complemented | not_x1 | [Mode 2: OAM Scan](oam-scan.md) |  |
+| GYBA | CH4 divider-enable-latch clock (`= NOT ch4_1mhz`) | not_x1 | [CH4: Noise Channel](apu-ch4.md) |  |
 | GYDA | NOT(GOJU) — Y-compare sum bit 6, complemented | not_x1 | [Mode 2: OAM Scan](oam-scan.md) |  |
 | GYKY | Carry-chain bit 3 | full_add | [Mode 2: OAM Scan](oam-scan.md) |  |
+| GYSU | `ch4_start` capture DFF (clk `apu_phi`) | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | GYTA | CH3 trigger self-clear delay | dffr | [CH3: Wave Channel](apu-ch3.md) |  |
 | GYZA | SCY bit-7 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | GYZO | SCY bit-5 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | HAFE | JOPA reset driver (pace 0) | nor4 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
+| HAMA | `hama_512khz` buffer (`= NOT jeso_n`) | not_x4 | [CH4: Noise Channel](apu-ch4.md) |  |
+| HAPE | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
+| HAZO | CH4 trigger nor_latch (feeds `ch4_restart.d`) | nor_latch | [CH4: Noise Channel](apu-ch4.md) |  |
 | HEFO | CH3 divider toggle clock (NOR stage) | nor2 | [CH3: Wave Channel](apu-ch3.md) |  |
+| HENO | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
+| HEPA | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | HEPO | Saturation capture | dffr | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | HEPU | CH2 divider bit 9 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | HERA | CH3 divider load enable (active-low) | nor2 | [CH3: Wave Channel](apu-ch3.md) |  |
 | HERO | CH2 divider bit 10 (MSB) | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | HEVY | CH2 divider bit 8 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
+| HEZU | CH4 LFSR output bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | HOFO | Volume bit-0 toggle clock | or3 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
+| HOGA | NR44 trigger-bit (`d7`) write strobe → `ch4_start` | drlatch_ee | [CH4: Noise Channel](apu-ch4.md) |  |
 | HORU | `horu_512hz` buffer chain stage | not_x3 | [APU Clock Tree and Frame Sequencer](apu-clocks.md) |  |
+| HORY | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
+| HUCE | CH4 prescaler load enable (`= NOT gofu`) | not_x1 | [CH4: Noise Channel](apu-ch4.md) |  |
 | HUNO | CH3 overflow capture (/2 toggle) | dffr | [CH3: Wave Channel](apu-ch3.md) |  |
+| HURA | CH4 LFSR feedback XNOR (the two XNOR taps) | xnor | [CH4: Noise Channel](apu-ch4.md) |  |
 | HYFE | CH1 divider bit 1 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | HYFO | CH3 overflow detector (NOT stage) | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
 | HYKE | CH1 divider bit 5 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | HYLY | Envelope counter load enable (NOR stage) | nor2 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
+| HYNO | CH4 prescaler terminal-count (`jyfu&jyre&jyco`) | and3 | [CH4: Noise Channel](apu-ch4.md) |  |
+| HYRO | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
+| JAJU | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | JAKE | Envelope counter load enable (NOT stage) | not_x1 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | JAPU | CH3 divider bit 10 (MSB) | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
+| JAVO | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | JEMA | CH1 divider bit 4 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | JEME | Envelope-stop latch | nor_latch | [Sweep and Envelope](apu-sweep-envelope.md) |  |
+| JEPE | CH4 LFSR state bit (7-bit inject point) | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | JERA | CH3 divider load-enable fan-out | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
+| JERY | `ch4_fdis` channel-disable latch | nand_latch | [CH4: Noise Channel](apu-ch4.md) |  |
+| JESO | CH4 free-running 512 kHz prescaler bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | JEVY | Envelope counter bit 2 | tffnl | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | JONA | Envelope counter bit 1 | tffnl | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | JOPA | Envelope-fire latch | dffr | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | JORE | Envelope counter bit 0 | tffnl | [Sweep and Envelope](apu-sweep-envelope.md) |  |
+| JOTO | CH4 LFSR feedback/chain-entry DFF | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | JUPU | Envelope pace = 0 detector | nor3 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
 | JUTY | CH3 divider toggle clock (NOT stage) | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
+| JUXE | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
+| JYCO | CH4 divisor prescaler bit 0 (loadable toggle) | tffnl | [CH4: Noise Channel](apu-ch4.md) |  |
+| JYFU | CH4 divisor prescaler bit 2 (loadable toggle) | tffnl | [CH4: Noise Channel](apu-ch4.md) |  |
+| JYJA | CH4 LFSR feedback-DFF clock (`= NOT ch4_lfsr_clk1`) | not_x1 | [CH4: Noise Channel](apu-ch4.md) |  |
 | JYNA | Frame sequencer /2 → 64 Hz (envelope tap) | dffr | [APU Clock Tree and Frame Sequencer](apu-clocks.md) | [Post-Boot State](post-boot.md) |
+| JYRE | CH4 divisor prescaler bit 1 (loadable toggle) | tffnl | [CH4: Noise Channel](apu-ch4.md) |  |
 | JYTY | CH1 divider bit 2 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | KAFO | CH3 divider bit 6 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
 | KAHE | CPL source (AO22 LCDC.7 mux) | ao22 | [LCDC Structure](registers/lcdc.md) | [LCD Output](lcd-output.md) |
+| KANU | CH4 divisor-prescaler toggle clock (`= kyku`) | not_x1 | [CH4: Noise Channel](apu-ch4.md) |  |
 | KASA | CPL PPU-clock source (LCD-on arm) | not | [LCD Output](lcd-output.md) |  |
 | KASO | CH3 divider load enable (bits 4–7) | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
+| KAVU | CH4 LFSR 7-bit-mode feedback inject | ao22 | [CH4: Noise Channel](apu-ch4.md) |  |
 | KEBO | FR PPU-clock source (LCD-on arm) | not | [LCD Output](lcd-output.md) |  |
 | KEDY | Mux selector complement (LCDC.7=0 arm) | not | [LCD Output](lcd-output.md) |  |
 | KEJU | CH3 divider bit 8 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
@@ -330,19 +388,26 @@ mention.
 | KENO | CH3 divider bit 7 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
 | KEPA | CH3 divider bit 5 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
 | KESE | CH3 divider ripple inverter (bits 8–10) | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
+| KETU | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | KEZA | CH3 divider bit 9 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
 | KOFO | FR pad driver | not | [LCD Output](lcd-output.md) |  |
+| KOMU | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
+| KONY | CH4 prescaler-clock gate inverter stage | not_x1 | [CH4: Noise Channel](apu-ch4.md) |  |
 | KUNU | CH3 divider bit 2 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
 | KUPA | FR source (AO22 LCDC.7 mux) | ao22 | [LCDC Structure](registers/lcdc.md) | [LCD Output](lcd-output.md) |
 | KUPE | CH3 divider bit 1 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
+| KUTA | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | KUTU | CH3 divider bit 0 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
+| KUZY | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | KYGU | CH3 divider bit 4 | tffnl | [CH3: Wave Channel](apu-ch3.md) |  |
 | KYKO | CH3 divider load enable (bits 0–3) | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
+| KYKU | CH4 prescaler-clock gate (`ch4_fdis OR jeso_512k`) | or2 | [CH4: Noise Channel](apu-ch4.md) |  |
 | KYMO | CPL pad driver | not | [LCD Output](lcd-output.md) |  |
 | KYNA | CH1 divider bit 3 | tffnl | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | KYPE | CH1 divider ripple inverter (bits 4–7) | not_x1 | [CH1/CH2: Pulse Channels](apu-ch1-ch2.md) |  |
 | KYRU | CH3 divider ripple inverter (bits 4–7) | not_x1 | [CH3: Wave Channel](apu-ch3.md) |  |
 | KYVO | Envelope counter-at-max detector | and3 | [Sweep and Envelope](apu-sweep-envelope.md) |  |
+| KYWY | CH4 LFSR state bit | dffr | [CH4: Noise Channel](apu-ch4.md) |  |
 | LACE | BGP bit-4 read driver | not_if0 | [Register Reads](registers/reads.md) |  |
 | LAFO | LY bit 7 | dffr | [Line Counters](line-counters.md) | [Register Reads](registers/reads.md) |
 | LAJU | OBP1 bit-0 read driver | not_if0 | [Register Reads](registers/reads.md) |  |

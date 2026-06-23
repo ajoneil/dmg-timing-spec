@@ -68,6 +68,7 @@
 - [APU Clock Tree and Frame Sequencer](apu-clocks.md)
 - [CH1/CH2: Pulse Channels](apu-ch1-ch2.md)
 - [CH3: Wave Channel](apu-ch3.md)
+- [CH4: Noise Channel](apu-ch4.md)
 - [Sweep and Envelope](apu-sweep-envelope.md)
 - [Length Counters and Power Cycling](apu-length-power.md)
 
