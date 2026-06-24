@@ -198,3 +198,39 @@ faithful model needs all three:
    channel-enabling trigger's first clock is one `hama_512khz` period late;
    a re-trigger of a running channel is not. (No effect at divisor code 0.)
 ```
+
+## Mid-run divisor-code changes (non-trigger)
+
+`huce = ch4_restart OR gary` carries **no NR43-write term**, so writing NR43
+while the channel plays does not itself reload the prescaler. The new divisor
+code waits at the load inputs (`ff22_d0..2_n`) and is loaded only when `huce` is
+next asserted — the reload that already fires on every terminal count. The
+14-bit shift divider is untouched (its only reset is `apu_reset`), so it keeps
+its phase across the change. A mid-run divisor-code change therefore takes effect
+at a prescaler reload, not at the write instant.
+
+```admonish info "Measured: a mid-run code change is captured at the next terminal (dmg-sim)"
+Divisor code 1 → 2 (`$11`→`$12`, shift fixed), with the write phase swept in
+4 T steps. At code 1 the prescaler period is 8 T — `gary`/`huce` high for ~4 T
+after each terminal (the load window), then low while counting:
+
+| write vs the load window | prescaler at the write | new code in effect |
+|---|---|---|
+| **inside** the window | reloads to the new code at once | ≈ at the write |
+| **outside** (counting) | finishes its period at the **old** code | at the next terminal (≈ +3 T) |
+
+The capture point tracks the prescaler terminal, **not** the write instant:
+across the sweep the new cadence stays locked to the prescaler grid — its phase
+set by the terminal that catches the change, never re-phased to the write.
+```
+
+Two corollaries follow. First, **a change made while the channel is on divisor
+code 0 takes effect at once:** code 0 pre-loads the prescaler to terminal,
+holding `gary`/`huce` high continuously, so the write is always inside the load
+window (dmg-sim: `$18`→`$1a`, code 0 → 2, switches the shift divider's clock from
+4 T to 16 T at the write). Second, the `ch4_fdis` load-settle is **trigger-only**:
+a non-trigger write, even one *into* a divisor code ≥ 1, never re-asserts
+`ch4_fdis` (its sole edge across each change is the trigger), so the cold
+"+1 `hama_512khz`" does not apply mid-run. The latch point is set entirely by the
+load-window phase and the code-0 case; the `huce`-driven load has no
+divisor-*direction* term.
