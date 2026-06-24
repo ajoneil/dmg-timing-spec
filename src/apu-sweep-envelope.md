@@ -131,18 +131,25 @@ The mid-channel write cases:
   behind "zombie mode" volume changes; the second — the per-write +1
   step — is measured below.
 
-```admonish info "Measured: zombie volume stepping — every pace-0 write ticks the counter"
+```admonish info "Measured: zombie volume stepping — every pace-0 write ticks the counter +1"
 The NRx2 cells are transparent latches, and during each write strobe the
-pace bits expose a ~16–19 ns data-bus transient (d0–d2 read 1 before the
-written value settles). JUPU dips, HOFO completes a fall→rise pulse, and
-the volume counter receives exactly one clock. Measured on a running CH2
-with pace = 0 (dmg-sim measurement, purpose-built `zombie_x8_ch2` ROM):
-**every identical `$18`-over-`$18` write steps the volume +1** — 19
-consecutive writes, zero variance, wrapping 15→0 freely (HEPO and JEME
-never fire under pace = 0, so no stop exists — the "repeat to decrement"
-idiom). A pace 0→1 write still steps +1 (the transient dip still fires);
-the return `$18`-over-`$19` write does **not** step — JUPU only rises,
-completing no pulse.
+**whole data byte transiently reads `$FF`** (~16–19 ns) before settling to
+the written value — measured directly: bits *written* 0 read 1 across the
+transient. The **pace** bits dip JUPU, so HOFO completes one fall→rise pulse
+and the volume counter gets exactly one clock; the **direction** bit
+(NRx2[3]) reads 1 through the same transient, so the toggle commits — and the
+whole carry ripple completes — while the muxes are still **up/carry**. The
+step is therefore **+1 regardless of the direction the value selects**: a
+decrease-mode write increments. Measured on a running CH2, pace = 0, zero
+variance (dmg-sim, the purpose-built `zombie_x8_ch2` and decrease-mode
+`zombie_x0_dec_ch2` ROMs): every `$18`-over-`$18` *and* every `$F0`-over-`$F0`
+write steps +1, wrapping 15→0 freely — HEPO and JEME never fire under
+pace = 0, so no stop exists (the "repeat to decrement" idiom). A pace 0→1
+write still steps +1 (the transient dip still fires); a pace 1→0 return write
+completes no HOFO pulse and does not step on its own — though in decrease mode
+the transient's direction edges can switch a ripple mux combinationally (the
+same spurious carry a deliberate flip produces), so `$F0`-over-`$F1` lands +2
+where `$18`-over-`$19` holds.
 ```
 
 **Saturation stop**: the saturated-low/high decodes (volume 0 + down /
